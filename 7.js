@@ -10,12 +10,12 @@ class Participant {
   // Метод dispatchMessage відправляє повідомлення за допомогою відповідного засобу комунікації.
   // Він приймає один параметр - text - текст повідомлення, яке потрібно відправити.
   dispatchMessage(text) {
-    const formattedMessage = this.formattedMessage(text);
-    this.messenger.dispatchMessage(formattedMessage);
+    const formattedMessage = this.prepareMessage(text);
+    this.communicator.transmit(formattedMessage);
   }
 
   // Метод prepareMessage приймає text та повертає  `[${this.alias}]: ${text}`
-  formattedMessage(text) {
+  prepareMessage(text) {
     return `[${this.alias}]: ${text}`;
   }
 }

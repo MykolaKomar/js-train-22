@@ -6,13 +6,13 @@ class AuthProcessor {
 
   setNextProcessor(processor) {
     // Зберігає наступний обробник в поточному об'єкті.
-    this.setNextProcessor = processor;
+    this.nextProcessor= processor;
     // Повертає переданий обробник, щоб дозволити подальше ланцюжкове викликання.
     return processor;
   }
 
   //validate Метод для перевірки аутентифікації. Приймає ім'я користувача (username) і пароль (passkey).
-  valide(username, passkey) {
+  validate(username, passkey) {
     // Перевіряє, чи є наступний обробник в ланцюгу.
     if (this.nextProcessor) {
       // Якщо так, передає запит на перевірку аутентифікації наступному обробнику,this.nextProcessor.validate(username, passkey), та повертаємо результат.
@@ -32,7 +32,7 @@ class TwoStepProcessor extends AuthProcessor {
     if (
       username === "john" &&
       passkey === "password" &&
-      this.sValidTwoStepCode()
+      this.isValidTwoStepCode()
     ) {
       // Виводить повідомлення про успішну аутентифікацію: Вхід дозволено з двофакторною аутентифікацією, і повертає true.
       console.log(` Вхід дозволено з двофакторною аутентифікацією`);
@@ -62,7 +62,7 @@ class RoleProcessor extends AuthProcessor {
       return true;
     } else {
       // Якщо роль не відповідає, запит на аутентифікацію передається наступному обробнику в ланцюгу.
-      return super.validate(username, passkey);
+      return super.validate(username);
     }
   }
 }
@@ -98,10 +98,10 @@ class ProcessorBuilder {
     // Якщо це перший обробник, він зберігається як перший і останній.
     // Якщо це не перший обробник, він додається в кінець ланцюга, і стає останнім.
     if (this.firstProcessor) {
-      this.firstProcessor = processor;
+      this.lastProcessor.setNextProcessor(processor);
       this.lastProcessor = processor;
     } else {
-      this.lastProcessor.setNextProcessor(processor);
+      this.firstProcessor = processor;
       this.lastProcessor = processor;
     }
     // Повертає this.
